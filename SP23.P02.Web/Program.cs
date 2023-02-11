@@ -50,7 +50,25 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseRouting();
+app.UseAuthorization();
 app.MapControllers();
+app.UseEndpoints(routeBuilder =>
+    {
+    routeBuilder.MapControllers();
+
+    });
+
+app.UseStaticFiles();
+app.UseSpa(spaBuilder =>
+{
+    spaBuilder.Options.SourcePath = "CientApp";
+    if (app.Environment.IsDevelopment())
+    {
+        spaBuilder.UseProxyToSpaDevelopmentServer("https://localhost:3000/");
+    }
+});
+
 
 app.Run();
 
