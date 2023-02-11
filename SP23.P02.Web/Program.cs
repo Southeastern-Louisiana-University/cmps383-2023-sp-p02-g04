@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SP23.P02.Web.Data;
+using SP23.P02.Web.Features.Users;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,11 +22,27 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+
+
 using (var scope = app.Services.CreateScope())
 {
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+    await roleManager.CreateAsync(new Role
+    {
+        Name = "Admin"
+    });
+
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    await userManager.CreateAsync(new User
+    {
+        UserName = "Bob",
+    }, "Password123!");
+
     var db = scope.ServiceProvider.GetRequiredService<DataContext>();
     await SeedHelper.MigrateAndSeed(db);
 }
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -37,7 +55,25 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseRouting();
+app.UseAuthorization();
 app.MapControllers();
+app.UseEndpoints(routeBuilder =>
+    {
+    routeBuilder.MapControllers();
+
+    });
+
+app.UseStaticFiles();
+app.UseSpa(spaBuilder =>
+{
+    spaBuilder.Options.SourcePath = "CientApp";
+    if (app.Environment.IsDevelopment())
+    {
+        spaBuilder.UseProxyToSpaDevelopmentServer("https://localhost:3000/");
+    }
+});
+
 
 app.Run();
 
