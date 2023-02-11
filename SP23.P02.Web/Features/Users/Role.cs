@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace SP23.P02.Web.Data
+namespace SP23.P02.Web.Features.Users
 {
     public class Role : IdentityRole<int>
     {
