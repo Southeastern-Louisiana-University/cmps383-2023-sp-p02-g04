@@ -49,7 +49,7 @@ namespace SP23.P02.Web.Controllers.User
             return Ok(new UserDto
             {
                 Id = Userid.Id,
-                UserName = Userid.UserName,
+               Name = Userid.UserName,
                 //Roles = Userid.Roles,
             });
         }
@@ -57,22 +57,22 @@ namespace SP23.P02.Web.Controllers.User
         [HttpPost]
         public ActionResult<UserDto> Create(UserDto user)
         {
-            if (string.IsNullOrEmpty(user.UserName))
+            if (string.IsNullOrEmpty(user.Name))
             {
                 return BadRequest("Name must be provided");
             }
-            if (user.UserName.Length > 120)
+            if (user.Name.Length > 120)
             {
                 return BadRequest("Name cannot be longer than 120 characters");
             }
-            if (string.IsNullOrEmpty(user.UserName))
+            if (string.IsNullOrEmpty(user.Name))
             {
                 return BadRequest("Must have an address");
             }
 
             var returnCreatedStation = new TrainStation
             {
-                Name = user.UserName,
+                Name = user.Name,
                 //   Address = trainStation.Roles,
             };
             // _context.Users.Add(returnCreatedStation);
