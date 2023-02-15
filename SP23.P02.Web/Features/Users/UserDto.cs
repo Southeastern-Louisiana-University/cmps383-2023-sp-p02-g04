@@ -6,7 +6,7 @@
 
         public string UserName { get; set; } = string.Empty;
 
-        public string[] Role { get; set; } = Array.Empty<string>();
+        public string[]? Role { get; set; } = Array.Empty<string>();
     }
 }
 
