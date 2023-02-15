@@ -37,7 +37,7 @@ namespace SP23.P02.Web.Controllers.User
 
 
         [HttpGet("{Id}")]
-        public ActionResult<TrainStationDto> Details([FromRoute] int Id)
+        public ActionResult<UserDto> Details([FromRoute] int Id)
         {
             var Userid = _context.Users.FirstOrDefault(x => x.Id == Id);
 
@@ -54,8 +54,8 @@ namespace SP23.P02.Web.Controllers.User
             });
         }
 
-        [HttpPost]
-        public ActionResult<UserDto> Create(UserDto user)
+        [HttpPost("{CreateUser}")]
+        public ActionResult<UserDto> Create(CreateUserDto user)
         {
             if (string.IsNullOrEmpty(user.UserName))
             {
@@ -69,20 +69,23 @@ namespace SP23.P02.Web.Controllers.User
             {
                 return BadRequest("Must have an address");
             }
-
-            var returnCreatedStation = new TrainStation
+            if (user.Password.Length > 120)
             {
-                Name = user.UserName,
+                return BadRequest("Password too long!");
+            }
+
+            var returnCreatedUser = new UserDto
+            {
+                UserName = user.UserName,
                 //   Address = trainStation.Roles,
             };
             // _context.Users.Add(returnCreatedStation);
             _context.SaveChanges();
 
-            user.Id = returnCreatedStation.Id;
+            user.UserName = returnCreatedUser.UserName;
 
-            return CreatedAtAction(nameof(Details), new { Id = returnCreatedStation.Id }, returnCreatedStation);
+            return CreatedAtAction(nameof(Details), new { Id = returnCreatedUser.Id }, returnCreatedUser.UserName);
 
         }
     }
 }
-       
