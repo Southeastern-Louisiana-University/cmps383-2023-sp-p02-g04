@@ -50,7 +50,7 @@ namespace SP23.P02.Web.Controllers.User
             {
                 Id = Userid.Id,
                 UserName = Userid.UserName,
-                //Roles = Userid.Roles,
+                //Roles = Userid.Roles
             });
         }
 
@@ -69,23 +69,44 @@ namespace SP23.P02.Web.Controllers.User
             {
                 return BadRequest("Must have an address");
             }
+            if (string.IsNullOrEmpty(user.Password))
+            {
+                return BadRequest("Name must be provided");
+            }
             if (user.Password.Length > 120)
             {
                 return BadRequest("Password too long!");
             }
-
-            var returnCreatedUser = new UserDto
+            /*
+            if (!string.IsNullOrWhiteSpace(user.Roles))
             {
-                UserName = user.UserName,
-                //   Address = trainStation.Roles,
-            };
-            // _context.Users.Add(returnCreatedStation);
-            _context.SaveChanges();
+                return BadRequest("Name must be provided");
+            }
+            if (user.Roles.Length > 120)
+            {
+            return BadRequest("Password too long!");
+            }
+            */
 
-            user.UserName = returnCreatedUser.UserName;
+                var returnCreatedUser = new CreateUserDto
+                {
+                    UserName = user.UserName,
+                    Password = user.Password,
+                    Roles = user.Roles,
+                };
 
-            return CreatedAtAction(nameof(Details), new { Id = returnCreatedUser.Id }, returnCreatedUser.UserName);
+                _context.SaveChanges();
 
-        }
+                user.UserName = returnCreatedUser.UserName;
+                user.Password = returnCreatedUser.Password;
+                user.Roles = returnCreatedUser.Roles;
+
+                //_context.Users.Add(returnCreatedUser);
+
+                return CreatedAtAction(nameof(Details), new { Id = returnCreatedUser.UserName }, returnCreatedUser.UserName);
+            }
+            
+
+        
     }
 }
